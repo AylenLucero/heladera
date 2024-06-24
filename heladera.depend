@@ -1,0 +1,29 @@
+# depslib dependency file v1.0
+1719045768 source:c:\users\lucer\heladera\lib.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"lib.h"
+
+1719043368 c:\users\lucer\heladera\lib.h
+
+1719043368 source:c:\users\lucer\heladera\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"lib.h"
+
+1719205328 source:c:\users\lucer\onedrive\escritorio\heladera\lib.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"lib.h"
+
+1719205685 c:\users\lucer\onedrive\escritorio\heladera\lib.h
+
+1719205214 source:c:\users\lucer\onedrive\escritorio\heladera\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"lib.h"
+
