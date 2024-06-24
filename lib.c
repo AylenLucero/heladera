@@ -4,11 +4,13 @@
 #include "lib.h"
 #define ValoresCuentasAdmin "cuentaAdmin.dat"
 #define ValoresCuentasCajero "cuentasCajeros.dat"
+#define ProductosHeladeria "productos.txt"
 
-TDatosCuentaCajeros datosCuentaCajero;
 
-void menuPrincipal(TDatosCuentaAdmin *datos)
+void menuPrincipal(TDatosCuentaAdminYCajero *datos)
 {
+    crearArchivoBinario(ProductosHeladeria);
+    system("cls");
     int opPuesto = 0;
     int dni_input;
     do
@@ -20,6 +22,27 @@ void menuPrincipal(TDatosCuentaAdmin *datos)
         switch(opPuesto)
         {
         case 1:
+            if(archivoEstaVacio(ValoresCuentasAdmin)==0)
+            {
+                printf("Ingrese su dni:\n");
+                fflush(stdin);
+                scanf("%d",&dni_input);
+                //si el dni existe redirigimos al login
+                if(existe_dni(ValoresCuentasCajero,dni_input)==1)
+                {
+                    //login..
+                    printf("Dni encontrado, procedemos al login.\n");
+                    login_admin(ValoresCuentasCajero,dni_input);
+                }
+                else
+                {
+                    //si no existe en la tabla lo llevamos al registro
+                    printf("El dni no está registrado en la tabla administadores. Un administrador debe registrar la cuenta.\n");
+                    system("pause");
+                }
+            } else {
+                printf("No existen cuentas creadas para cajeros");
+            }
             break;
         case 2:
             if(archivoEstaVacio(ValoresCuentasAdmin)==0)
@@ -32,15 +55,14 @@ void menuPrincipal(TDatosCuentaAdmin *datos)
                 {
                     //login..
                     printf("Dni encontrado, procedemos al login.\n");
-                    system("pause");
                     login_admin(ValoresCuentasAdmin,dni_input);
                 }
                 else
                 {
                     //si no existe en la tabla lo llevamos al registro
-                    printf("El dni no está registrado en la tabla administadores.\n");
+                    printf("El dni no está registrado en la tabla administadores\n");
                     system("pause");
-                    guardar_admin(ValoresCuentasAdmin, dni_input);
+                    guardar_admin(ValoresCuentasAdmin, dni_input, "Administrador");
                 }
             }
             else
@@ -49,7 +71,7 @@ void menuPrincipal(TDatosCuentaAdmin *datos)
                 fflush(stdin);
                 scanf("%d",&dni_input);
                 system("pause");
-                guardar_admin(ValoresCuentasAdmin,dni_input);
+                guardar_admin(ValoresCuentasAdmin,dni_input, "Administrador");
             }
 
 
@@ -90,65 +112,60 @@ int archivoEstaVacio(char *nombreArchivo)
     return size == 0; // Retorna 1 si el archivo está vacío, 0 si no lo está
 }
 
-void menuAdmin(TDatosCuentaAdmin *datos)
+void menuAdmin(TDatosCuentaAdminYCajero *datos)
 {
     int op = 0;
     int dni_input;
     do
     {
         printf("Bienvenido al ADMINISTRADOR\n");
-        listar_admins();
-        printf("Elija una de las opciones:\n1)Agregar nuevo cajero\n2)Agregar nuevo administrador\n3)Revisar stock\n4)Realizar compra\n5)Volver al menu principal\n6)Eliminar admin\n");
+        printf("Elija una de las opciones:\n1)Agregar nuevo cajero\n2)Agregar nuevo administrador\n3)Revisar/Agregar stock\n4)Realizar compra\n5)Volver al menu principal\n6)Eliminar admin\n");
         fflush(stdin);
         scanf("%d",&op);
         switch(op)
         {
         case 1:
-            if(archivoEstaVacio(ValoresCuentasCajero)==0)
-            {
-                printf("Ingrese su dni:\n");
+                crearArchivoBinario(ValoresCuentasCajero);
+                printf("Ingrese el dni del cajero a registrar:\n");
                 fflush(stdin);
                 scanf("%d",&dni_input);
                 //si el dni existe redirigimos al login
-                if(existe_dni(ValoresCuentasAdmin,dni_input)==1)
+                if(existe_dni(ValoresCuentasCajero,dni_input)==1)
                 {
                     //login..
-                    printf("Dni encontrado, procedemos al login.\n");
+                    printf("Dni encontrado, este cajero ya posee una cuenta.\n");
                     system("pause");
-                    login_admin(ValoresCuentasAdmin,dni_input);
+                    menuAdmin(&datos);
                 }
                 else
                 {
                     //si no existe en la tabla lo llevamos al registro
-                    printf("El dni no está registrado en la tabla administadores.\n");
-                    system("pause");
-                    guardar_admin(ValoresCuentasAdmin, dni_input);
+                    guardar_admin(ValoresCuentasCajero, dni_input, "Cajero");
                 }
-            }
-            else
-            {
-                printf("Ingrese su dni:\n");
-                fflush(stdin);
-                scanf("%d",&dni_input);
-                system("pause");
-                guardar_admin(ValoresCuentasAdmin,dni_input);
-            }
+            menuAdmin(&datos);
             break;
         case 2:
             printf("Ingrese su dni:\n");
             fflush(stdin);
             scanf("%d",&dni_input);
             system("pause");
-            while(existe_dni(ValoresCuentasAdmin,dni_input)==1)
+            while(existe_dni(ValoresCuentasCajero,dni_input)==1)
             {
                 //login..
                 printf("Dni encontrado, ingrese dni que no tenga cuenta\n");
                 fflush(stdin);
                 scanf("%d",&dni_input);
             }
-            guardar_admin(ValoresCuentasAdmin,dni_input);
+            guardar_admin(ValoresCuentasAdmin,dni_input, "Administrador");
             break;
         case 3:
+            if(archivoEstaVacio(ProductosHeladeria)!=0) {
+                printf("Administrador, inicia por primera vez. Es su responsabilidad cargar el stock con el que comienza su heladeria\n");
+                cargar_stock_inicio();
+            } else {
+                printf("El stock actual es: \n");
+
+            }
             break;
         case 4:
             break;
@@ -160,6 +177,7 @@ void menuAdmin(TDatosCuentaAdmin *datos)
             fflush(stdin);
             scanf("%d",&dni_input);
             eliminar_admin(dni_input);
+            menuAdmin(&datos);
             break;
         default:
             break;
@@ -168,34 +186,11 @@ void menuAdmin(TDatosCuentaAdmin *datos)
     while (op<1 || op>6);
 }
 
-int existeEnArchivo(char *nombreArchivoBinario, int dniBuscar)
-{
-    FILE *archivo = fopen(nombreArchivoBinario, "rb");
-    if (archivo == NULL)
-    {
-        return 0;
-    }
-
-    TDatosCuentaAdmin datos;
-    while (fread(&datos, sizeof(TDatosCuentaAdmin), 1, archivo))
-    {
-        if (datos.dni == dniBuscar)
-        {
-            fclose(archivo);
-            return 1; // DNI encontrado
-        }
-    }
-
-    fclose(archivo);
-    return 0; // DNI no encontrado
-}
-
-
-void guardar_admin(char *nomArchivo, int dni_input)
+void guardar_admin(char *nomArchivo, int dni_input, char texto)
 {
     if(existe_dni(nomArchivo,dni_input)==0)//si el dni no está registrado, procedemos
     {
-        TDatosCuentaAdmin admin;
+        TDatosCuentaAdminYCajero admin;
         FILE * archivo;
         archivo=fopen(nomArchivo,"ab");
         if(archivo!=NULL)
@@ -211,13 +206,13 @@ void guardar_admin(char *nomArchivo, int dni_input)
 
             if(fclose(archivo)==0)
             {
-                printf("Administrador cargado!\n");
+                printf("%s cargado!\n", texto);
                 printf("\n");
                 return;
             }
             else
             {
-                printf("No se pudo cargar el administrador \n");
+                printf("No se pudo cargar el %s \n", texto);
             }
         }
         else
@@ -236,7 +231,7 @@ void guardar_admin(char *nomArchivo, int dni_input)
 
 int existe_dni(char *ValoresCuentasAdmins,int dni_input)
 {
-    TDatosCuentaAdmin admin;
+    TDatosCuentaAdminYCajero admin;
     FILE * archivo = fopen(ValoresCuentasAdmins,"rb");
     if(archivo!=NULL)
     {
@@ -261,44 +256,12 @@ int existe_dni(char *ValoresCuentasAdmins,int dni_input)
 
 }
 
-void leerArchivoBinario(char *nombreArchivoBinario, TDatosCuentaAdmin *datos, char *puesto)
-{
-    system("cls");
-    FILE *archivo = fopen(nombreArchivoBinario, "rb");
-    int dato;
-    if(archivo != NULL)
-    {
-        int dniBuscar;
-        char contrasena[20];
-        printf("INICIAR SESION\nPara ingresar a su cuenta de %s, debe:\n", puesto);
-        printf("Ingresar DNI: ");
-        fflush(stdin);
-        scanf("%d",&dniBuscar);
-        printf("Ingresar contrasena: ");
-        fflush(stdin);
-        scanf("%s",&contrasena);
-        while (fread(datos, sizeof(TDatosCuentaAdmin), 1, archivo))
-        {
-            if ((datos->dni == dniBuscar) && (strcmp(contrasena,datos->contrasena)==0))
-            {
-                fclose(archivo);
-                menuAdmin(datos);
-                break;
-            }
-        }
 
-    }
-    else
-    {
-        printf("No se pudo abrir el archivo. ERROR: %s\n",strerror(errno));
-    }
-}
-
-void login_admin(char *ValoresCuentasAdmins,int dni_admin)
+void login_admin(char *nomArchivo,int dni_admin)
 {
-    TDatosCuentaAdmin admin;
+    TDatosCuentaAdminYCajero admin;
     char contrasena_input[20];
-    FILE *archivo = fopen(ValoresCuentasAdmins, "rb");
+    FILE *archivo = fopen(nomArchivo, "rb");
     if(archivo!=NULL)
     {
         while (!feof(archivo))//mientras el puntero tenga para leer..
@@ -317,8 +280,12 @@ void login_admin(char *ValoresCuentasAdmins,int dni_admin)
                     {
                         //si coincide..
                         printf("Redirigiendo..\n");
+                        if(strcmp(ValoresCuentasCajero,nomArchivo)){
+                        fclose(archivo);
                         menuAdmin(&admin);
-
+                        } else {
+                            menuCajero();
+                        }
                     }
                     else
                     {
@@ -339,10 +306,10 @@ void login_admin(char *ValoresCuentasAdmins,int dni_admin)
 
 void eliminar_admin(int dni_input)
 {
-    TDatosCuentaAdmin cuenta;
-    char contrasena_input[20];
-    FILE *archivo = fopen("cuentaAdmin.dat", "rb");
+    TDatosCuentaAdminYCajero cuenta;
+    FILE *archivo = fopen(ValoresCuentasAdmin, "rb");
     FILE *temp = fopen("temp.dat", "wb");
+    char contrasena_input[20];
     int encontrado = 0;
     char decision;
 
@@ -358,81 +325,56 @@ void eliminar_admin(int dni_input)
     scanf(" %c", &decision);
     decision = toupper(decision);
 
-    if (decision == 'S')
+    if(decision=='S')
     {
-        while (fread(&cuenta, sizeof(cuenta), 1, archivo) == 1)
+        //leemos el archivo 'original'
+        while(fread(&cuenta,sizeof(cuenta),1,archivo)==1)
         {
-            if (cuenta.dni != dni_input)
+            //mientras herr.id sea != del id consultado para eliminar, copiamos esa herramienta en temp.dat
+            if(cuenta.dni!=dni_input)
             {
-                fwrite(&cuenta, sizeof(cuenta), 1, temp);
+                fwrite(&cuenta,sizeof(cuenta),1,temp);
             }
             else
             {
-                printf("Ingrese la contraseña correspondiente a su DNI '%d':\n", cuenta.dni);
+                printf("Ingrese password del admin '%d' a eliminar\n",cuenta.dni);
                 fflush(stdin);
-                gets(contrasena_input);  // Consider using fgets instead of gets for safety
-                // Remove newline character from input
-                printf("La contrasena es:%s\n", cuenta.contrasena);
-                if (strcmp(contrasena_input, cuenta.contrasena) == 0)
-                {
-                    encontrado = 1;
+                gets(contrasena_input);
+                if(strcmp(cuenta.contrasena,contrasena_input)==0){
+                    //en caso de que el herr.id coincida con el id por borrar..
+                    encontrado=1;
+                }else{
+                    printf("Password incorrecta\n");
+                    system("pause");
+                    menuAdmin(&cuenta);
                 }
-                else
-                {
-                    printf("Contraseña incorrecta\n");
-                    fclose(archivo);
-                    fclose(temp);
-                    remove("temp.dat"); // Clean up the temp file
-                    return;
-                }
+
             }
         }
-
         fclose(archivo);
         fclose(temp);
 
-        if (encontrado == 1)
+        if(encontrado==1)
         {
-            // Retry mechanism for remove
-            for (int attempt = 0; attempt < 5; ++attempt)
-            {
-                if (remove("cuentaAdmin.dat") == 0)
-                {
-                    break;
-                }
-                printf("Intento de eliminar '%s' fallido. Reintentando...\n", "cuentaAdmin.dat");
-                sleep(1); // Wait for 1 second before retrying
-            }
-
-            // Retry mechanism for rename
-            for (int attempt = 0; attempt < 5; ++attempt)
-            {
-                if (rename("temp.dat", "cuentaAdmin.dat") == 0)
-                {
-                    break;
-                }
-                printf("Intento de renombrar 'temp.dat' a '%s' fallido. Reintentando...\n", "cuentaAdmin.dat");
-                sleep(1); // Wait for 1 second before retrying
-            }
+                    if(remove(ValoresCuentasAdmin)==0){
+                        rename("temp.dat", ValoresCuentasAdmin);
+                        listar_admins();
+                    }else{
+                        printf("ERROR: %s\n",strerror(errno));
+                    }
         }
         else
         {
             remove("temp.dat");
-            printf("Administrador con DNI '%d' no encontrado.\n", dni_input);
+            printf("\n");
         }
-    }
-    else if (decision == 'N')
-    {
-        printf("Se canceló la operación.\n");
-        fclose(archivo);
-        fclose(temp);
-        remove("temp.dat"); // Clean up the temp file
+
     }
 }
 
 void listar_admins()
 {
-    TDatosCuentaAdmin admin;
+    TDatosCuentaAdminYCajero admin;
     FILE *archivo = fopen(ValoresCuentasAdmin, "rb");
     if(!archivo)
     {
@@ -443,7 +385,7 @@ void listar_admins()
         fread(&admin, sizeof(admin),1,archivo);
         while(!feof(archivo))
         {
-            printf("Dni:%d, contraseña:%s\n",admin.dni,admin.contrasena);
+            printf("DNI ADMIN:%d\n",admin.dni,admin.contrasena);
             fread(&admin, sizeof(admin),1,archivo);
         }
     }
@@ -451,4 +393,84 @@ void listar_admins()
 }
 
 /**********************SECCION CAJEROS*****************************************/
+void menuCajero(){
+printf("Probando");
+}
+void cargar_stock_inicio() {
+    TProductos productos;
+    TDatosCuentaAdminYCajero dato;
+    FILE *archivo = fopen(ProductosHeladeria, "ab");
+    if(!archivo) {
+        printf("Archivo no encontrado");
+    } else {
+        printf("Ingrese la cantidad de tortas heladas: ");
+        fflush(stdin);
+        scanf("%d",&productos.tortas_heladas);
+        printf("\nIngrese el precio de cada torta helada: ");
+        fflush(stdin);
+        scanf("%f",&productos.precio_tortas_heladas);
+        printf("\nIngrese la cantidad de postres helados: ");
+        fflush(stdin);
+        scanf("%d",&productos.postres_helados);
+        printf("\nIngrese el precio de cada postre helado: ");
+        fflush(stdin);
+        scanf("%f",&productos.precio_postres_helados);
+        printf("\nAhora vamos a ingresar la cantidad, en gramos, de cada sabor:\n");
+        printf("Dulce de leche: ");
+        fflush(stdin);
+        scanf("%f",&productos.saboresGramos.dulce_de_leche_gramos);
+        printf("\nFrutilla: ");
+        fflush(stdin);
+        scanf("%f",&productos.saboresGramos.frutilla_gramos);
+        printf("\nCrema Americana: ");
+        fflush(stdin);
+        scanf("%f",&productos.saboresGramos.crema_americana_gramos);
+        printf("\nChocolate: ");
+        fflush(stdin);
+        scanf("%f",&productos.saboresGramos.chocolate_gramos);
+        printf("\nMenta granizada: ");
+        fflush(stdin);
+        scanf("%f",&productos.saboresGramos.menta_granizada_gramos);
+        // Solicitar datos de precios de venta
+        printf("Ingrese los precios de venta:\n");
 
+        printf("Una bocha: ");
+        scanf("%f", &productos.preciosVentas.una_bocha);
+
+        printf("Dos bochas: ");
+        scanf("%f", &productos.preciosVentas.dos_bochas);
+
+        printf("Tres bochas: ");
+        scanf("%f", &productos.preciosVentas.tres_bochas);
+
+        printf("Un cuarto (kilo): ");
+        scanf("%f", &productos.preciosVentas.cuarto);
+
+        printf("Medio kilo: ");
+        scanf("%f", &productos.preciosVentas.medio);
+
+        printf("Un kilo: ");
+        scanf("%f", &productos.preciosVentas.kilo);
+
+        // Escribir todos los datos en el archivo
+        fprintf(archivo, "%d %.2f %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
+                productos.tortas_heladas, productos.precio_tortas_heladas,
+                productos.postres_helados, productos.precio_postres_helados,
+                productos.saboresGramos.dulce_de_leche_gramos,
+                productos.saboresGramos.frutilla_gramos,
+                productos.saboresGramos.crema_americana_gramos,
+                productos.saboresGramos.chocolate_gramos,
+                productos.saboresGramos.menta_granizada_gramos,
+                productos.preciosVentas.una_bocha, productos.preciosVentas.dos_bochas,
+                productos.preciosVentas.tres_bochas, productos.preciosVentas.cuarto,
+                productos.preciosVentas.medio, productos.preciosVentas.kilo);
+
+        printf("\nFelicidades, el stock fue cargado con exito\n");
+    }
+    fclose(archivo);
+    menuAdmin(&dato);
+}
+
+void listar_stock() {
+    FILE *archivo = fopen(ProductosHeladeria, "rb");
+}

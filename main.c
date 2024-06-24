@@ -6,7 +6,7 @@
 
 int main()
 {
-    TDatosCuentaAdmin datos;
+    TDatosCuentaAdminYCajero datos;
     //crearArchivoBinario(ValoresCuentasAdmin);
     menuPrincipal(&datos);
 
