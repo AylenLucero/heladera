@@ -193,7 +193,7 @@ int existeEnArchivo(char *nombreArchivoBinario, int dniBuscar)
 
 void guardar_admin(char *nomArchivo, int dni_input)
 {
-    if(existe_dni(ValoresCuentasAdmin,dni_input)==0)//si el dni no está registrado, procedemos
+    if(existe_dni(nomArchivo,dni_input)==0)//si el dni no está registrado, procedemos
     {
         TDatosCuentaAdmin admin;
         FILE * archivo;
@@ -228,16 +228,16 @@ void guardar_admin(char *nomArchivo, int dni_input)
     else
     {
         printf("DNI ya registrado\n");
-        login_admin(ValoresCuentasAdmin,dni_input);
+        login_admin(nomArchivo,dni_input);
 
     }
 }
 
 
-int existe_dni(char ValoresCuentasAdmin,int dni_input)
+int existe_dni(char *ValoresCuentasAdmins,int dni_input)
 {
     TDatosCuentaAdmin admin;
-    FILE * archivo = fopen(ValoresCuentasAdmin,"rb");
+    FILE * archivo = fopen(ValoresCuentasAdmins,"rb");
     if(archivo!=NULL)
     {
         while (!feof(archivo)) //mientras el puntero tenga para leer..
@@ -294,11 +294,11 @@ void leerArchivoBinario(char *nombreArchivoBinario, TDatosCuentaAdmin *datos, ch
     }
 }
 
-void login_admin(int dni_admin)
+void login_admin(char *ValoresCuentasAdmins,int dni_admin)
 {
     TDatosCuentaAdmin admin;
     char contrasena_input[20];
-    FILE *archivo = fopen(ValoresCuentasAdmin, "rb");
+    FILE *archivo = fopen(ValoresCuentasAdmins, "rb");
     if(archivo!=NULL)
     {
         while (!feof(archivo))//mientras el puntero tenga para leer..
