@@ -5,30 +5,15 @@ typedef struct DatosCuentaAdmin { //Estructura datos de cuenta de administradore
     char contrasena[20];
 } TDatosCuentaAdminYCajero;
 /**************************/
-typedef struct PreciosVenta {
-    float una_bocha;
-    float dos_bochas;
-    float tres_bochas;
-    float cuarto;
-    float medio;
-    float kilo;
-}TPreciosVentas;
-typedef struct SaboresPorKilo {
-    float dulce_de_leche_gramos;
-    float frutilla_gramos;
-    float crema_americana_gramos;
-    float chocolate_gramos;
-    float menta_granizada_gramos;
-}TSaboresPorKilo;
 typedef struct Productos {
     int tortas_heladas;
     float precio_tortas_heladas;
     int postres_helados;
     float precio_postres_helados;
-    /*TSaboresPalitosHelados palitos_helados;*/
-    TSaboresPorKilo saboresGramos;
-    TPreciosVentas preciosVentas;
+    float saboresKGramos[5];
+    float preciosPorCantidad[6];
 }TProductos;
+
 /**************************/
 
 void menuPrincipal();
@@ -41,8 +26,8 @@ void menuCajero();
 void guardarDatos();
 int existe_dni(char *ValoresCuentasAdmin,int dni_input);
 void login_admin(char *ValoresCuentasAdmin,int dni_admin);
-void guardar_admin(char *nomArchivo, int dni_input, char texto);
-void eliminar_admin(int dni_input);
+void guardar_admin(char *nomArchivo, int dni_input, char *texto);
+void eliminar_admin_O_Cajero(char *nomArchivo,int dni_input);
 void listar_admins();
 
 void cargar_stock_inicio();
