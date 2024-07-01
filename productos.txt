@@ -1,2 +1,2 @@
 tortas_heladas,precio_tortas_heladas,postres_helados,precio_postres_helados,dulce_de_leche_gramos,frutilla_gramos,crema_americana_gramos,chocolate_gramos,menta_granizada_gramos,una_bocha,dos_bochas,tres_bochas,cuarto,medio,kilo
-8,0.00,30,2.00,7.90,10.00,1073741824.00,1073741824.00,1073741824.00,20.00,25.00,30.00,40.00,50.00,60.00
+4,50.00,30,2.00,10.36,9.83,5.00,2.00,1.00,20.00,25.00,30.00,40.00,50.00,60.00

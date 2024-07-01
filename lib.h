@@ -4,7 +4,6 @@ typedef struct DatosCuentaAdmin { //Estructura datos de cuenta de administradore
     int dni;
     char contrasena[20];
 } TDatosCuentaAdminYCajero;
-/**************************/
 typedef struct Productos {
     int tortas_heladas;
     float precio_tortas_heladas;
@@ -14,7 +13,6 @@ typedef struct Productos {
     float preciosPorCantidad[6];
 }TProductos;
 
-/**************************/
 
 void menuPrincipal();
 void crearArchivoBinario(char *nombreArchivoBinario);
@@ -31,5 +29,8 @@ void eliminar_admin_O_Cajero(char *nomArchivo,int dni_input);
 void listar_admins();
 
 void cargar_stock_inicio();
+void eleccion_sabor(double peso_a_restar);
+void cargar_stock_inicio();
+void mostrar_mensaje_intermitente(const char *mensaje, int duracion);
 
 #endif // LIB_H_INCLUDED

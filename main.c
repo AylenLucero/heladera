@@ -4,10 +4,13 @@
 #include "lib.h"
 #define ValoresCuentasAdmin "cuentaAdmin.dat"
 
+/************************
+Aylen Camila Lucero Lyonnet
+*************************/
+
 int main()
 {
     TDatosCuentaAdminYCajero datos;
-    //crearArchivoBinario(ValoresCuentasAdmin);
     menuPrincipal(&datos);
 
     return 0;

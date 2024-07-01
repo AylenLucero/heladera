@@ -41,7 +41,9 @@ void menuPrincipal(TDatosCuentaAdminYCajero *datos)
                     printf("El dni no está registrado en la tabla administadores. Un administrador debe registrar la cuenta.\n");
                     system("pause");
                 }
-            } else {
+            }
+            else
+            {
                 printf("No existen cuentas creadas para cajeros");
             }
             break;
@@ -140,23 +142,23 @@ void menuAdmin(TDatosCuentaAdminYCajero *datos)
         switch(op)
         {
         case 1:
-                crearArchivoBinario(ValoresCuentasCajero);
-                printf("Ingrese el dni del cajero a registrar:\n");
-                fflush(stdin);
-                scanf("%d",&dni_input);
-                //si el dni existe redirigimos al login
-                if(existe_dni(ValoresCuentasCajero,dni_input)==1)
-                {
-                    //login..
-                    printf("Dni encontrado, este cajero ya posee una cuenta.\n");
-                    system("pause");
-                    menuAdmin(&datos);
-                }
-                else
-                {
-                    //si no existe en la tabla lo llevamos al registro
-                    guardar_admin(ValoresCuentasCajero, dni_input, "Cajero");
-                }
+            crearArchivoBinario(ValoresCuentasCajero);
+            printf("Ingrese el dni del cajero a registrar:\n");
+            fflush(stdin);
+            scanf("%d",&dni_input);
+            //si el dni existe redirigimos al login
+            if(existe_dni(ValoresCuentasCajero,dni_input)==1)
+            {
+                //login..
+                printf("Dni encontrado, este cajero ya posee una cuenta.\n");
+                system("pause");
+                menuAdmin(&datos);
+            }
+            else
+            {
+                //si no existe en la tabla lo llevamos al registro
+                guardar_admin(ValoresCuentasCajero, dni_input, "Cajero");
+            }
             menuAdmin(&datos);
             break;
         case 2:
@@ -174,11 +176,14 @@ void menuAdmin(TDatosCuentaAdminYCajero *datos)
             guardar_admin(ValoresCuentasAdmin,dni_input, "Administrador");
             break;
         case 3:
-            if(archivoEstaVacio(ProductosHeladeria)!=0) {
+            if(archivoEstaVacio(ProductosHeladeria)!=0)
+            {
                 printf("Administrador, inicia por primera vez. Es su responsabilidad cargar el stock con el que comienza su heladeria\n");
                 pedirDatosProcutosInicio();
                 guardarDatosTxtProductos();
-            } else {
+            }
+            else
+            {
                 system("cls");
                 listarDatos();
                 system("pause");
@@ -307,10 +312,13 @@ void login_admin(char *nomArchivo,int dni_admin)
                     {
                         //si coincide..
                         printf("Redirigiendo..\n");
-                        if(strcmp(ValoresCuentasCajero,nomArchivo)){
-                        fclose(archivo);
-                        menuAdmin(&admin);
-                        } else {
+                        if(strcmp(ValoresCuentasCajero,nomArchivo))
+                        {
+                            fclose(archivo);
+                            menuAdmin(&admin);
+                        }
+                        else
+                        {
                             menuCajero();
                         }
                     }
@@ -365,20 +373,26 @@ void eliminar_admin_O_Cajero(char *nomArchivo,int dni_input)
             else
             {
                 printf("%d",strcmp(nomArchivo,ValoresCuentasAdmin));
-                if(strcmp(nomArchivo,ValoresCuentasAdmin)==0) { //unicamente se pide contraseña para eliminar otro admin
-                printf("Ingrese password del admin '%d' a eliminar\n",cuenta.dni);
-                fflush(stdin);
-                gets(contrasena_input);
+                if(strcmp(nomArchivo,ValoresCuentasAdmin)==0)   //unicamente se pide contraseña para eliminar otro admin
+                {
+                    printf("Ingrese password del admin '%d' a eliminar\n",cuenta.dni);
+                    fflush(stdin);
+                    gets(contrasena_input);
 
-                if(strcmp(cuenta.contrasena,contrasena_input)==0){
-                    //en caso de que el herr.id coincida con el id por borrar..
-                    encontrado=1;
-                }else{
-                    printf("Password incorrecta\n");
-                    system("pause");
-                    menuAdmin(&cuenta);
+                    if(strcmp(cuenta.contrasena,contrasena_input)==0)
+                    {
+                        //en caso de que el herr.id coincida con el id por borrar..
+                        encontrado=1;
+                    }
+                    else
+                    {
+                        printf("Password incorrecta\n");
+                        system("pause");
+                        menuAdmin(&cuenta);
+                    }
                 }
-                } else {
+                else
+                {
                     encontrado=1;
                 }
 
@@ -389,11 +403,14 @@ void eliminar_admin_O_Cajero(char *nomArchivo,int dni_input)
 
         if(encontrado==1)
         {
-                    if(remove(nomArchivo)==0){
-                        rename("temp.dat", nomArchivo);
-                    }else{
-                        printf("ERROR: %s\n",strerror(errno));
-                    }
+            if(remove(nomArchivo)==0)
+            {
+                rename("temp.dat", nomArchivo);
+            }
+            else
+            {
+                printf("ERROR: %s\n",strerror(errno));
+            }
         }
         else
         {
@@ -425,11 +442,25 @@ void listar_admins()
 }
 
 /**********************SECCION CAJEROS*****************************************/
-void menuCajero(){
-obtenerPedido();
+void menuCajero()
+{
+    int op;
+    system("cls");
+    printf("Bienvenido al menu del Cajero. Que desea hacer?\n1)Cargar nueva venta\n2)Volver al menu principal\n");
+    fflush(stdin);
+    scanf("%d",&op);
+    switch(op)
+    {
+    case 1:
+        obtenerPedido();
+        break;
+    default:
+        break;
+    }
 }
 
-void pedirDatosProcutosInicio() {
+void pedirDatosProcutosInicio()
+{
     printf("Ingrese la cantidad de tortas heladas: ");
     scanf("%d", &productos.tortas_heladas);
 
@@ -478,17 +509,19 @@ void pedirDatosProcutosInicio() {
     scanf("%f", &productos.preciosPorCantidad[5]);
 }
 
-void guardarDatosTxtProductos() {
+void guardarDatosTxtProductos()
+{
     FILE* archivo = fopen("productos.txt", "w");
 
-    if (archivo == NULL) {
+    if (archivo == NULL)
+    {
         printf("No se pudo abrir el archivo.\n");
         return;
     }
 
     fprintf(archivo, "tortas_heladas,precio_tortas_heladas,postres_helados,precio_postres_helados,"
-                     "dulce_de_leche_gramos,frutilla_gramos,crema_americana_gramos,chocolate_gramos,menta_granizada_gramos,"
-                     "una_bocha,dos_bochas,tres_bochas,cuarto,medio,kilo\n");
+            "dulce_de_leche_gramos,frutilla_gramos,crema_americana_gramos,chocolate_gramos,menta_granizada_gramos,"
+            "una_bocha,dos_bochas,tres_bochas,cuarto,medio,kilo\n");
 
     fprintf(archivo, "%d,%.2f,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n",
             productos.tortas_heladas,
@@ -511,10 +544,12 @@ void guardarDatosTxtProductos() {
     printf("Datos guardados en productos.txt\n");
 }
 
-void listarDatos() {
+void listarDatos()
+{
     FILE* archivo = fopen(ProductosHeladeria, "rt");
 
-    if (archivo == NULL) {
+    if (archivo == NULL)
+    {
         printf("No se pudo abrir el archivo.\n");
         return;
     }
@@ -537,7 +572,8 @@ void listarDatos() {
                   &productos.preciosPorCantidad[2],
                   &productos.preciosPorCantidad[3],
                   &productos.preciosPorCantidad[4],
-                  &productos.preciosPorCantidad[5]) != EOF) {
+                  &productos.preciosPorCantidad[5]) != EOF)
+    {
         printf("1)Tortas Heladas: %d\n", productos.tortas_heladas);
         printf("2)Precio Tortas Heladas: %.2f\n", productos.precio_tortas_heladas);
         printf("3)Postres Helados: %d\n", productos.postres_helados);
@@ -559,7 +595,8 @@ void listarDatos() {
 
     fclose(archivo);
 }
-void realizarPedido() {
+void realizarPedido()
+{
 
     int producto, cantidad;
     float nuevo_precio, cantidad_suelto;
@@ -567,121 +604,126 @@ void realizarPedido() {
     TDatosCuentaAdminYCajero datos;
     listarDatos(); // Llama a la función listarDatosProductos para mostrar los productos y sus precios actuales
 
-    do {
+    do
+    {
         printf("Seleccione el número del producto que desea incrementar o el precio que desea cambiar (Tener en cuenta cual corresponde a cada caso):\n");
         fflush(stdin);
         scanf("%d", &producto);
 
-        switch (producto) {
-            case 1:
-                printf("Cantidad a agregar de Tortas Heladas: ");
-                fflush(stdin);
-                scanf("%d", &cantidad);
-                productos.tortas_heladas += cantidad;
-                break;
-            case 2:
-                printf("Nuevo precio de cada Torta Helada: ");
-                fflush(stdin);
-                scanf("%f",&nuevo_precio);
-                productos.precio_tortas_heladas = nuevo_precio;
-                break;
-            case 3:
-                printf("Cantidad a agregar de Postres Helados: ");
-                fflush(stdin);
-                scanf("%d", &cantidad);
-                productos.postres_helados += cantidad;
-                break;
-            case 4:
-                printf("Nuevo precio de cada Postre Helado: ");
-                fflush(stdin);
-                scanf("%f", &nuevo_precio);
-                productos.precio_postres_helados = nuevo_precio;
-                break;
-            case 5:
-                printf("Cantidad a agregar de Dulce de leche (unicamente por KG): ");
-                fflush(stdin);
-                scanf("%f", &cantidad_suelto);
-                productos.saboresKGramos[0] += cantidad_suelto;
-                break;
-            case 6:
-                printf("Cantidad a agregar de Frutilla (unicamente por KG): ");
-                fflush(stdin);
-                scanf("%f", &cantidad_suelto);
-                productos.saboresKGramos[1] += cantidad_suelto;
-                break;
-            case 7:
-                printf("Cantidad a agregar de Crema americana (unicamente por KG): ");
-                fflush(stdin);
-                scanf("%f", &cantidad_suelto);
-                productos.saboresKGramos[2] += cantidad_suelto;
-                break;
-            case 8:
-                printf("Cantidad a agregar de Chocolate (unicamente por KG): ");
-                fflush(stdin);
-                scanf("%f", &cantidad_suelto);
-                productos.saboresKGramos[3] += cantidad_suelto;
-                break;
-            case 9:
-                printf("Cantidad a agregar de Menta granizada (unicamente por KG): ");
-                fflush(stdin);
-                scanf("%f", &cantidad_suelto);
-                productos.saboresKGramos[4] += cantidad_suelto;
-                break;
-            case 10:
-                printf("Nuevo precio de Producto 10: ");
-                fflush(stdin);
-                scanf("%f", &nuevo_precio);
-                productos.preciosPorCantidad[0] = nuevo_precio;
-                break;
-            case 11:
-                printf("Nuevo precio de Producto 11: ");
-                fflush(stdin);
-                scanf("%f", &nuevo_precio);
-                productos.preciosPorCantidad[1] = nuevo_precio;
-                break;
-            case 12:
-                printf("Nuevo precio de Producto 12: ");
-                fflush(stdin);
-                scanf("%f", &nuevo_precio);
-                productos.preciosPorCantidad[2] = nuevo_precio;
-                break;
-            case 13:
-                printf("Nuevo precio de Producto 13: ");
-                fflush(stdin);
-                scanf("%f", &nuevo_precio);
-                productos.preciosPorCantidad[3] = nuevo_precio;
-                break;
-            case 14:
-                printf("Nuevo precio de Producto 14: ");
-                fflush(stdin);
-                scanf("%f", &nuevo_precio);
-                productos.preciosPorCantidad[4] = nuevo_precio;
-                break;
-            case 15:
-                printf("Nuevo precio de Producto 15: ");
-                fflush(stdin);
-                scanf("%f", &nuevo_precio);
-                productos.preciosPorCantidad[5] = nuevo_precio;
-                break;
-            default:
-                printf("Opción no válida.\n");
-                break;
+        switch (producto)
+        {
+        case 1:
+            printf("Cantidad a agregar de Tortas Heladas: ");
+            fflush(stdin);
+            scanf("%d", &cantidad);
+            productos.tortas_heladas += cantidad;
+            break;
+        case 2:
+            printf("Nuevo precio de cada Torta Helada: ");
+            fflush(stdin);
+            scanf("%f",&nuevo_precio);
+            productos.precio_tortas_heladas = nuevo_precio;
+            break;
+        case 3:
+            printf("Cantidad a agregar de Postres Helados: ");
+            fflush(stdin);
+            scanf("%d", &cantidad);
+            productos.postres_helados += cantidad;
+            break;
+        case 4:
+            printf("Nuevo precio de cada Postre Helado: ");
+            fflush(stdin);
+            scanf("%f", &nuevo_precio);
+            productos.precio_postres_helados = nuevo_precio;
+            break;
+        case 5:
+            printf("Cantidad a agregar de Dulce de leche (unicamente por KG): ");
+            fflush(stdin);
+            scanf("%f", &cantidad_suelto);
+            productos.saboresKGramos[0] += cantidad_suelto;
+            break;
+        case 6:
+            printf("Cantidad a agregar de Frutilla (unicamente por KG): ");
+            fflush(stdin);
+            scanf("%f", &cantidad_suelto);
+            productos.saboresKGramos[1] += cantidad_suelto;
+            break;
+        case 7:
+            printf("Cantidad a agregar de Crema americana (unicamente por KG): ");
+            fflush(stdin);
+            scanf("%f", &cantidad_suelto);
+            productos.saboresKGramos[2] += cantidad_suelto;
+            break;
+        case 8:
+            printf("Cantidad a agregar de Chocolate (unicamente por KG): ");
+            fflush(stdin);
+            scanf("%f", &cantidad_suelto);
+            productos.saboresKGramos[3] += cantidad_suelto;
+            break;
+        case 9:
+            printf("Cantidad a agregar de Menta granizada (unicamente por KG): ");
+            fflush(stdin);
+            scanf("%f", &cantidad_suelto);
+            productos.saboresKGramos[4] += cantidad_suelto;
+            break;
+        case 10:
+            printf("Nuevo precio de Producto 10: ");
+            fflush(stdin);
+            scanf("%f", &nuevo_precio);
+            productos.preciosPorCantidad[0] = nuevo_precio;
+            break;
+        case 11:
+            printf("Nuevo precio de Producto 11: ");
+            fflush(stdin);
+            scanf("%f", &nuevo_precio);
+            productos.preciosPorCantidad[1] = nuevo_precio;
+            break;
+        case 12:
+            printf("Nuevo precio de Producto 12: ");
+            fflush(stdin);
+            scanf("%f", &nuevo_precio);
+            productos.preciosPorCantidad[2] = nuevo_precio;
+            break;
+        case 13:
+            printf("Nuevo precio de Producto 13: ");
+            fflush(stdin);
+            scanf("%f", &nuevo_precio);
+            productos.preciosPorCantidad[3] = nuevo_precio;
+            break;
+        case 14:
+            printf("Nuevo precio de Producto 14: ");
+            fflush(stdin);
+            scanf("%f", &nuevo_precio);
+            productos.preciosPorCantidad[4] = nuevo_precio;
+            break;
+        case 15:
+            printf("Nuevo precio de Producto 15: ");
+            fflush(stdin);
+            scanf("%f", &nuevo_precio);
+            productos.preciosPorCantidad[5] = nuevo_precio;
+            break;
+        default:
+            printf("Opción no válida.\n");
+            break;
         }
 
         printf("¿Desea actualizar otro producto? (S/N): ");
         fflush(stdin);
         scanf(" %c", &continuar);
         continuar = toupper(continuar);
-    } while (continuar == 'S');
+    }
+    while (continuar == 'S');
 
     // Guardar los nuevos datos en el archivo
     guardarDatosTxtProductos();
     printf("Pedido realizado y datos actualizados.\n");
     menuAdmin(&datos);
 }
-void leerDatosProductos() {
+void leerDatosProductos()
+{
     FILE* archivo = fopen(ProductosHeladeria, "rt");
-    if (archivo == NULL) {
+    if (archivo == NULL)
+    {
         printf("No se pudo abrir el archivo.\n");
         exit(EXIT_FAILURE);
     }
@@ -703,9 +745,11 @@ void leerDatosProductos() {
 
     fclose(archivo);
 }
-void mostrarInformacionProductosVentas() {
+void mostrarInformacionProductosVentas()
+{
     FILE* archivo = fopen(ProductosHeladeria, "rt");
-    if (archivo == NULL) {
+    if (archivo == NULL)
+    {
         printf("No se pudo abrir el archivo.\n");
         return;
     }
@@ -730,15 +774,18 @@ void mostrarInformacionProductosVentas() {
     printf("8) Kilo: %.2f\n", precios[5]);
 }
 
-void obtenerPedido() {
+void obtenerPedido()
+{
     int producto, cantidad;
     float totalGastado = 0, bocha = 0.020, cuarto= 0.250, medio= 0.500;
     char continuar;
+    float aux;
     mostrarInformacionProductosVentas(); // Mostrar productos y precios
-    /*************************/
+    /*********/
     FILE* archivo = fopen(ProductosHeladeria, "rt");
 
-    if (archivo == NULL) {
+    if (archivo == NULL)
+    {
         printf("No se pudo abrir el archivo.\n");
         return;
     }
@@ -761,89 +808,108 @@ void obtenerPedido() {
                   &productos.preciosPorCantidad[2],
                   &productos.preciosPorCantidad[3],
                   &productos.preciosPorCantidad[4],
-                  &productos.preciosPorCantidad[5]) != EOF) {
-        do {
+                  &productos.preciosPorCantidad[5]) != EOF)
+    {
+        do
+        {
 
-        printf("Seleccione el número del producto que desea incluir a su pedido:\n");
-        scanf("%d", &producto);
+            printf("Seleccione el n mero del producto que desea incluir a su pedido:\n");
+            scanf("%d", &producto);
 
-        switch (producto) {
+            switch (producto)
+            {
             // Casos para los productos
             case 1:
                 printf("Ingrese la cantidad de Tortas Heladas que desea comprar:");
                 fflush(stdin);
                 scanf("%d",&cantidad);
                 printf("%d",productos.tortas_heladas);
-                if (productos.tortas_heladas >= cantidad) {
+                if (productos.tortas_heladas >= cantidad)
+                {
                     productos.tortas_heladas -= cantidad; // Actualizar inventario
                     totalGastado += cantidad * productos.precio_tortas_heladas;
                     printf("Producto agregado al pedido.\n");
-                } else {
+                }
+                else
+                {
                     totalGastado += productos.tortas_heladas * productos.precio_tortas_heladas;
                     productos.tortas_heladas = 0;
-                    printf("Se agotó el stock de Tortas Heladas. Se agregaron %d a su pedido\n",productos.tortas_heladas);
+                    printf("Se agot  el stock de Tortas Heladas. Se agregaron %d a su pedido\n",productos.tortas_heladas);
                 }
                 break;
             case 2:
-                if (productos.precio_postres_helados >= cantidad) {
+                if (productos.precio_postres_helados >= cantidad)
+                {
                     productos.precio_postres_helados -= cantidad; // Actualizar inventario
                     totalGastado += cantidad * productos.precio_postres_helados;
                     printf("Producto agregado al pedido.\n");
-                } else {
+                }
+                else
+                {
                     totalGastado += productos.precio_postres_helados;
                     productos.postres_helados = 0;
-                    printf("Se agotó el stock de postres Helados.\n");
+                    printf("Se agot  el stock de postres Helados.\n");
                 }
                 break;
             case 3:
                 printf("Selecciono un helado de una bocha: Elija un sabor\n");
-                eleccion_sabor(bocha,&totalGastado);
+                eleccion_sabor(bocha);
+                totalGastado+=productos.preciosPorCantidad[0];
                 break;
             case 4:
                 printf("Selecciono un helado de dos bochas: Elija uno o dos sabor\n");
-                printf("ACA%f\n",bocha*2);
-                eleccion_sabor(bocha*2,&totalGastado);
+
+                //printf("ACA%f\n",aux);
+                eleccion_sabor(bocha*2);
+                totalGastado+=productos.preciosPorCantidad[1];
                 break;
             case 5:
                 printf("Selecciono un helado de tres bochas: Elija un sabor\n");
-                eleccion_sabor(bocha*3,&totalGastado);
+                eleccion_sabor(bocha*3);
+                totalGastado+=productos.preciosPorCantidad[2];
                 break;
             case 6:
                 printf("Selecciono un cuarto de helado: Elija un sabor\n");
-                eleccion_sabor(cuarto,&totalGastado);
+                eleccion_sabor(cuarto);
+                totalGastado+=productos.preciosPorCantidad[3];
                 break;
             case 7:
                 printf("Selecciono medio de helado: Elija un sabor\n");
-                eleccion_sabor(medio,&totalGastado);
+                eleccion_sabor(medio);
+                totalGastado+=productos.preciosPorCantidad[3];
                 break;
-                case 8:
+            case 8:
                 printf("Selecciono 1kg de helado: Elija un sabor\n");
-                eleccion_sabor(medio*2,&totalGastado);
+                eleccion_sabor(medio*2);
+                totalGastado+=productos.preciosPorCantidad[4];
                 break;
             default:
-                printf("Opción no válida.\n");
+                printf("Opci n no v lida.\n");
                 break;
+            }
+            guardarDatosTxtProductos();
+            printf("Desea agregar otro producto al pedido? (S/N): ");
+            scanf(" %c", &continuar);
+            continuar = toupper(continuar);
         }
-        guardarDatosTxtProductos();
-        printf("¿Desea agregar otro producto al pedido? (S/N): ");
-        scanf(" %c", &continuar);
-        continuar = toupper(continuar);
-    } while (continuar == 'S');
+        while (continuar == 'S');
     }
-    /********************************/
-
-fclose(archivo);
+    fclose(archivo);
     printf("Total gastado en el pedido: %.2f\n", totalGastado);
 }
 
-void eleccion_sabor(float peso_a_restar, float *total_gastado) {
-    printf("PESO A RESTAR: %f",peso_a_restar);
+void eleccion_sabor(double peso_a_restar)
+{
     int opSabor;
     int veces_a_elegir;
-    float peso_restante = peso_a_restar;
+    double peso_restante;
+    peso_a_restar = round(peso_a_restar*1000)/1000;
+    peso_restante =peso_a_restar;
+
     FILE* archivo = fopen(ProductosHeladeria, "rt");
 
-    if (archivo == NULL) {
+    if (archivo == NULL)
+    {
         printf("No se pudo abrir el archivo.\n");
         return;
     }
@@ -866,60 +932,135 @@ void eleccion_sabor(float peso_a_restar, float *total_gastado) {
                   &productos.preciosPorCantidad[2],
                   &productos.preciosPorCantidad[3],
                   &productos.preciosPorCantidad[4],
-                  &productos.preciosPorCantidad[5]) != EOF) {
+                  &productos.preciosPorCantidad[5]) != EOF)
+    {
 
-    // Calcular cuántas veces se puede elegir el sabor
-    printf("PESO A RESTAR: %f",peso_a_restar);
-    if (peso_a_restar == 0.020) {
-        veces_a_elegir = 1;
-    } else if (peso_a_restar == 0.040) {
-        veces_a_elegir = 2;
-    } else if (peso_a_restar == 0.060) {
-        veces_a_elegir = 3;
-    } else if (peso_a_restar == 0.250) {
-        veces_a_elegir = 2;
-    } else if (peso_a_restar == 0.500) {
-        veces_a_elegir = 3;
-    } else if (peso_a_restar == 1.000) {
-        veces_a_elegir = 4;
-    } else {
-        printf("Peso no válido\n");
-        return;
-    }
+        // Calcular cuntas veces se puede elegir el sabor
+        printf("PESO A RESTAR: %lf ",peso_a_restar);
 
-    do {
-        printf("1) Dulce de leche\n2) Frutilla\n3) Crema americana\n4) Chocolate\n5) Menta granizada\n");
-        fflush(stdin);
-        scanf("%d", &opSabor);
+        if (peso_a_restar == 0.020)
+        {
+            veces_a_elegir = 1;
+        }
+        else if (peso_a_restar == 0.040)
+        {
+            veces_a_elegir = 2;
+        }
+        else if (peso_a_restar == 0.060)
+        {
+            veces_a_elegir = 3;
+        }
+        else if (peso_a_restar == 0.250)
+        {
+            veces_a_elegir = 2;
+        }
+        else if (peso_a_restar == 0.500)
+        {
+            veces_a_elegir = 3;
+        }
+        else if (peso_a_restar == 1.000)
+        {
+            veces_a_elegir = 4;
+        }
+        else
+        {
+            printf("Peso no vlido\n");
+            return;
+        }
+        int aux = veces_a_elegir;
+        do
+        {
+            printf("1) Dulce de leche\n2) Frutilla\n3) Crema americana\n4) Chocolate\n5) Menta granizada\n");
+            fflush(stdin);
+            scanf("%d", &opSabor);
 
-        switch (opSabor) {
+            switch (opSabor)
+            {
             case 1:
-                productos.saboresKGramos[0] -= peso_restante / veces_a_elegir;
-                *total_gastado += productos.preciosPorCantidad[0] / veces_a_elegir;
+                if(productos.saboresKGramos[0]>=peso_restante)
+                {
+                    productos.saboresKGramos[0] -= (peso_restante / aux);
+                }
+                else
+                {
+                    mostrar_mensaje_intermitente("No hay stock, redirigiendo...",1);
+                    system("cls");
+                    obtenerPedido();
+                }
+
                 break;
             case 2:
-                productos.saboresKGramos[1] -= peso_restante / veces_a_elegir;
-                *total_gastado += productos.preciosPorCantidad[1] / veces_a_elegir;
+                if(productos.saboresKGramos[0]>=peso_restante)
+                {
+                    productos.saboresKGramos[0] -= (peso_restante / aux);
+                }
+                else
+                {
+                    mostrar_mensaje_intermitente("No hay stock, redirigiendo...",2);
+                    system("cls");
+                    obtenerPedido();
+                }
+                productos.saboresKGramos[1] -= (peso_restante / aux);
                 break;
             case 3:
-                productos.saboresKGramos[2] -= peso_restante / veces_a_elegir;
-                *total_gastado += productos.preciosPorCantidad[2] / veces_a_elegir;
+                if(productos.saboresKGramos[0]>=peso_restante)
+                {
+                    productos.saboresKGramos[0] -= (peso_restante / aux);
+                }
+                else
+                {
+                    mostrar_mensaje_intermitente("No hay stock, redirigiendo...",2);
+                    system("cls");
+                    obtenerPedido();
+                }
                 break;
             case 4:
-                productos.saboresKGramos[3] -= peso_restante / veces_a_elegir;
-                *total_gastado += productos.preciosPorCantidad[3] / veces_a_elegir;
+                if(productos.saboresKGramos[0]>=peso_restante)
+                {
+                    productos.saboresKGramos[0] -= (peso_restante / aux);
+                }
+                else
+                {
+                    mostrar_mensaje_intermitente("No hay stock, redirigiendo...",2);
+                    system("cls");
+                    obtenerPedido();
+                }
                 break;
             case 5:
-                productos.saboresKGramos[4] -= peso_restante / veces_a_elegir;
-                *total_gastado += productos.preciosPorCantidad[4] / veces_a_elegir;
+                if(productos.saboresKGramos[0]>=peso_restante)
+                {
+                    productos.saboresKGramos[0] -= (peso_restante / aux);
+                }
+                else
+                {
+                    mostrar_mensaje_intermitente("No hay stock, redirigiendo...",2);
+                    system("cls");
+                    obtenerPedido();
+                }
                 break;
             default:
-                printf("Esa opción no existe\n");
+                mostrar_mensaje_intermitente("Esta opcion no existe, redirigiendo...",2);
+                system("cls");
+                obtenerPedido();
                 break;
-        }
+            }
 
-        veces_a_elegir--;
-    } while (veces_a_elegir > 0);
+            veces_a_elegir--;
+        }
+        while (veces_a_elegir > 0);
     }
     fclose(archivo);
+}
+
+
+void mostrar_mensaje_intermitente(const char *mensaje, int duracion)
+{
+    int i;
+    for (i = 0; i < duracion; i++)
+    {
+        printf("%s\r", mensaje);
+        fflush(stdout);
+        usleep(1000000); // Retraso de 1 segundos
+    }
+    printf("\n");
 }
