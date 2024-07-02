@@ -5,8 +5,10 @@
 #define ValoresCuentasAdmin "cuentaAdmin.dat"
 #define ValoresCuentasCajero "cuentasCajeros.dat"
 #define ProductosHeladeria "productos.txt"
+#define HistorialVentas "histoVentas.txt"
 
 TProductos productos;
+THistorialVentas histoVentas;
 
 void menuPrincipal(TDatosCuentaAdminYCajero *datos)
 {
@@ -777,9 +779,9 @@ void mostrarInformacionProductosVentas()
 void obtenerPedido()
 {
     int producto, cantidad;
-    float totalGastado = 0, bocha = 0.020, cuarto= 0.250, medio= 0.500;
+    float totalGastado = 0, bocha = 0.020, cuarto= 0.250;
     char continuar;
-    float aux;
+    int aux =0;
     mostrarInformacionProductosVentas(); // Mostrar productos y precios
     /*********/
     FILE* archivo = fopen(ProductosHeladeria, "rt");
@@ -829,6 +831,10 @@ void obtenerPedido()
                     productos.tortas_heladas -= cantidad; // Actualizar inventario
                     totalGastado += cantidad * productos.precio_tortas_heladas;
                     printf("Producto agregado al pedido.\n");
+                    strcpy(histoVentas.productosVendidos[aux],'Torta Helada');
+                    histoVentas.cantProdVendidos[aux] += cantidad;
+                    histoVentas.preciosProductos[aux] = productos.precio_tortas_heladas;
+                    histoVentas.totalPrev[aux] = totalGastado;
                 }
                 else
                 {
@@ -859,7 +865,6 @@ void obtenerPedido()
             case 4:
                 printf("Selecciono un helado de dos bochas: Elija uno o dos sabor\n");
 
-                //printf("ACA%f\n",aux);
                 eleccion_sabor(bocha*2);
                 totalGastado+=productos.preciosPorCantidad[1];
                 break;
@@ -875,24 +880,28 @@ void obtenerPedido()
                 break;
             case 7:
                 printf("Selecciono medio de helado: Elija un sabor\n");
-                eleccion_sabor(medio);
+                eleccion_sabor(cuarto*2);
                 totalGastado+=productos.preciosPorCantidad[3];
                 break;
             case 8:
                 printf("Selecciono 1kg de helado: Elija un sabor\n");
-                eleccion_sabor(medio*2);
+                eleccion_sabor(cuarto*4);
                 totalGastado+=productos.preciosPorCantidad[4];
                 break;
             default:
-                printf("Opci n no v lida.\n");
+                printf("Opcion no valida.\n");
                 break;
             }
             guardarDatosTxtProductos();
             printf("Desea agregar otro producto al pedido? (S/N): ");
             scanf(" %c", &continuar);
             continuar = toupper(continuar);
+            if('S'==continuar) {
+                aux += 1;
+            }
         }
         while (continuar == 'S');
+        guardarVentas(continuar,aux);
     }
     fclose(archivo);
     printf("Total gastado en el pedido: %.2f\n", totalGastado);
@@ -1063,4 +1072,17 @@ void mostrar_mensaje_intermitente(const char *mensaje, int duracion)
         usleep(1000000); // Retraso de 1 segundos
     }
     printf("\n");
+}
+
+void guardarVentas(char continuar, int aux) {
+    FILE *archivo = fopen(HistorialVentas, "at");
+    if(!archivo)
+        printf("Archivo no encontrado");
+    for(int i = 0; i<aux; i++) {
+    fprintf(archivo,"%d %s %d %f %f", histoVentas.id, histoVentas.productosVendidos[i],histoVentas.cantProdVendidos[i],histoVentas.preciosProductos[i], histoVentas.totalPrev[i]);
+    }
+    if('N'==continuar) {
+        histoVentas.id += 1;
+    }
+    fclose(archivo);
 }

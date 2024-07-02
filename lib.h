@@ -1,6 +1,6 @@
 #ifndef LIB_H_INCLUDED
 #define LIB_H_INCLUDED
-typedef struct DatosCuentaAdmin { //Estructura datos de cuenta de administradores
+typedef struct DatosCuentaAdmin { //Estructura datos de cuenta de administradores y cajeros
     int dni;
     char contrasena[20];
 } TDatosCuentaAdminYCajero;
@@ -12,7 +12,16 @@ typedef struct Productos {
     float saboresKGramos[5];
     float preciosPorCantidad[6];
 }TProductos;
-
+typedef struct HistorialVentas {
+    int id;
+    int idTotal;
+    char fecha[11];
+    char productosVendidos[100][100];
+    int cantProdVendidos[100];
+    float preciosProductos[100];
+    float totalPrev[100];
+    float total;
+}THistorialVentas;
 
 void menuPrincipal();
 void crearArchivoBinario(char *nombreArchivoBinario);
